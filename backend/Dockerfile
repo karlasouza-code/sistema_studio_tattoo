@@ -1,12 +1,18 @@
-FROM node:18
+FROM node:18-alpine
 
 WORKDIR /app
 
+# Copia package.json e package-lock.json (se existir)
 COPY package*.json ./
+
+# Instala dependências
 RUN npm install
 
+# Copia o restante do código
 COPY . .
 
-EXPOSE 3000
+# Expõe a porta que seu app usa
+EXPOSE 3001
 
-CMD ["npm", "start"]
+# Comando para iniciar o app
+CMD ["node", "index.js"]
