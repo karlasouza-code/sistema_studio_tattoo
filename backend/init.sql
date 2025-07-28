@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS agendamentos (
     cliente_id INTEGER REFERENCES clientes(id),
     data DATE NOT NULL,
     hora TIME NOT NULL,
-    descricao TEXT
+    descricao TEXT,
+    valor NUMERIC(10,2)
 );
 
 CREATE TABLE IF NOT EXISTS usuarios (
@@ -23,4 +24,4 @@ CREATE TABLE IF NOT EXISTS usuarios (
     usuario VARCHAR(50) UNIQUE NOT NULL,
     senha VARCHAR(255) NOT NULL,
     tipo VARCHAR(20) NOT NULL DEFAULT 'atendente' -- 'admin' ou 'atendente'
-); 
+);
