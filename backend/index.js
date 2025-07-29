@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 
 const app = express();
 app.use(cors({
-  origin: 'http://localhost:3002',
+  origin: ['http://localhost:3002', 'http://localhost:3000', 'https://*.vercel.app', 'https://*.railway.app'],
   credentials: true
 }));
 app.use(express.json());
@@ -231,6 +231,11 @@ app.get('/cep/:cep', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: 'Erro ao buscar CEP' });
   }
+});
+
+// Rota de health check para Railway
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
 const PORT = process.env.PORT || 3001;

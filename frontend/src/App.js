@@ -8,6 +8,7 @@ import Login from './Login';
 import Configuracoes from './Configuracoes';
 import TrocarSenha from './TrocarSenha';
 import RedesSociais from './RedesSociais';
+import { API_CONFIG } from './config';
 import './App.css';
 
 function App() {
@@ -18,7 +19,7 @@ function App() {
 
   // Após login, usar tipo retornado pelo backend
   const handleLogin = async (usuario, senha) => {
-    const res = await fetch('http://localhost:3001/login', {
+    const res = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.login}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
