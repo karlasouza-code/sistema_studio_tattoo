@@ -50,9 +50,9 @@ DB_HOST=seu-host-render
 DB_NAME=tattoo_studio
 DB_PASS=sua-senha-render
 DB_PORT=5432
-SESSION_SECRET=minha-chave-secreta-123456789
+SESSION_SECRET=tattoo-studio-karla-2024-secret-key-123456789
 USUARIO=admin
-SENHA=1234
+SENHA=laurinhatattoo
 ```
 
 ### 1.5 Configurar o banco de dados
@@ -228,3 +228,37 @@ Health Check Path: /health
 3. **Configure o Root Directory como `backend`**
 
 Quer que eu te ajude a recriar o Web Service corretamente? 
+
+## ❌ Erro de conexão! Vamos resolver isso.
+
+O erro `ECONNRESET` indica que a conexão foi resetada. Vamos tentar algumas soluções:
+
+### **Solução 1: Verificar se o banco está ativo**
+1. **Vá no Render**
+2. **Verifique se o banco `tattoo-database` está "available"**
+3. **Se estiver "suspended", clique em "Restart Database"**
+
+### **Solução 2: Verificar configurações de acesso**
+No Render, no banco PostgreSQL:
+1. **Vá em "Access Control"**
+2. **Verifique se tem `0.0.0.0/0`** (permite acesso de qualquer lugar)
+3. **Se não tiver, adicione**
+
+### **Solução 3: Usar URL externa**
+Tente conectar usando a **External Database URL**:
+```
+postgresql://tattoo_user:SSf2yeuxDPQgEevlp3iIkpfmfN2khjNq@dpg-d24io195pdvs73fmh430-a.oregon-postgres.render.com:5432/tattoo_studio
+```
+
+### **Solução 4: Verificar se o banco está funcionando**
+1. **Vá no Render**
+2. **Clique no banco PostgreSQL**
+3. **Verifique o status**
+4. **Veja se há algum erro nos logs**
+
+## 🔍 Me diga:
+1. **O status do banco está "available"?**
+2. **Aparece algum erro nos logs do banco?**
+3. **Você consegue ver a External Database URL no Render?**
+
+**Me manda o status do banco PostgreSQL no Render!** 🗄️ 
