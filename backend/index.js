@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 
 const app = express();
 app.use(cors({
-  origin: ['http://localhost:3002', 'http://localhost:3000', 'https://*.vercel.app', 'https://*.railway.app'],
+  origin: ['http://localhost:3002', 'http://localhost:3000', 'https://*.vercel.app', 'https://*.railway.app', 'https://karlasouza-code.github.io'],
   credentials: true
 }));
 app.use(express.json());
