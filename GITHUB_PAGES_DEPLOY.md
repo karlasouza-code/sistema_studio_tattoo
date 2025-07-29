@@ -191,3 +191,40 @@ npm run deploy
 ---
 
 **Dúvidas?** Se encontrar algum problema, me avise qual passo específico e qual erro apareceu! 
+
+## 🔧 Como corrigir:
+
+### **1. Mude a Language:**
+1. **Procure a seção "Language"** (deve estar no topo da página)
+2. **Clique em "Edit"** na seção Language
+3. **Mude de "Docker" para "Node"**
+4. **Clique em "Save changes"**
+
+### **2. Se não encontrar a seção Language:**
+Pode ser que você precise **recriar o Web Service**:
+
+1. **Delete este Web Service atual**
+2. **Clique em "New +" → "Web Service"**
+3. **Conecte o repositório novamente**
+4. **Na configuração inicial, escolha "Node" como Language**
+
+### **3. Configurações corretas para Node:**
+```
+Language: Node
+Root Directory: backend
+Build Command: npm install
+Start Command: node index.js
+Health Check Path: /health
+```
+
+##  **O problema atual:**
+- Está configurado como **Docker**
+- Mas não tem Dockerfile configurado corretamente
+- Por isso está dando erro
+
+##  **Solução mais rápida:**
+1. **Delete este Web Service**
+2. **Crie um novo** selecionando **Node** desde o início
+3. **Configure o Root Directory como `backend`**
+
+Quer que eu te ajude a recriar o Web Service corretamente? 
