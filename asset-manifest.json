@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/sistema_studio_tattoo/static/css/main.ac9badcf.css",
+    "main.js": "/sistema_studio_tattoo/static/js/main.8708fdfa.js",
+    "static/js/488.cccd0e31.chunk.js": "/sistema_studio_tattoo/static/js/488.cccd0e31.chunk.js",
+    "service-worker.js": "/sistema_studio_tattoo/service-worker.js",
+    "index.html": "/sistema_studio_tattoo/index.html",
+    "main.ac9badcf.css.map": "/sistema_studio_tattoo/static/css/main.ac9badcf.css.map",
+    "main.8708fdfa.js.map": "/sistema_studio_tattoo/static/js/main.8708fdfa.js.map",
+    "488.cccd0e31.chunk.js.map": "/sistema_studio_tattoo/static/js/488.cccd0e31.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ac9badcf.css",
+    "static/js/main.8708fdfa.js"
+  ]
+}
