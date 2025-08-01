@@ -6,8 +6,19 @@ const bcrypt = require('bcryptjs');
 
 const app = express();
 app.use(cors({
-  origin: ['http://localhost:3002', 'http://localhost:3000', 'https://*.vercel.app', 'https://*.railway.app', 'https://karlasouza-code.github.io'],
-  credentials: true
+  origin: [
+    'http://localhost:3002', 
+    'http://localhost:3000', 
+    'http://localhost:3001', 
+    'https://*.vercel.app', 
+    'https://*.railway.app', 
+    'https://karlasouza-code.github.io',
+    'https://*.github.io',
+    'https://*.github.com'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 
@@ -51,7 +62,8 @@ app.use(session({
 // Rota de login (atualizada para usuários do banco)
 app.post('/login', async (req, res) => {
   const { usuario, senha } = req.body;
-  // Login fixo admin
+  
+  // Login fixo admin (sempre funciona)
   if (usuario === USUARIO && senha === SENHA) {
     req.session.logado = true;
     req.session.tipo = 'admin';
@@ -59,7 +71,8 @@ app.post('/login', async (req, res) => {
     res.json({ sucesso: true, tipo: 'admin', precisaTrocarSenha: false });
     return;
   }
-  // Login de usuário do banco
+  
+  // Login de usuário do banco (se o banco estiver disponível)
   try {
     const result = await pool.query('SELECT * FROM usuarios WHERE usuario = $1', [usuario]);
     if (result.rows.length === 0) return res.status(401).json({ erro: 'Usuário ou senha inválidos' });
@@ -71,7 +84,9 @@ app.post('/login', async (req, res) => {
     req.session.usuario = usuario;
     res.json({ sucesso: true, tipo: user.tipo, precisaTrocarSenha: user.precisatrocarsenha });
   } catch (err) {
-    res.status(500).json({ erro: err.message });
+    console.log('Erro no banco de dados:', err.message);
+    // Se o banco não estiver disponível, apenas o login fixo funciona
+    res.status(401).json({ erro: 'Usuário ou senha inválidos' });
   }
 });
 
@@ -149,7 +164,9 @@ app.get('/usuarios', autenticar, apenasAdmin, async (req, res) => {
     const result = await pool.query('SELECT id, nome, usuario, tipo FROM usuarios ORDER BY id');
     res.json(result.rows);
   } catch (err) {
-    res.status(500).json({ erro: err.message });
+    console.log('Erro ao listar usuários:', err.message);
+    // Retorna lista vazia se o banco não estiver disponível
+    res.json([]);
   }
 });
 
@@ -165,7 +182,8 @@ app.post('/usuarios', autenticar, apenasAdmin, async (req, res) => {
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
-    res.status(500).json({ erro: err.message });
+    console.log('Erro ao criar usuário:', err.message);
+    res.status(500).json({ erro: 'Erro ao criar usuário. Verifique se o banco de dados está configurado.' });
   }
 });
 
@@ -236,6 +254,16 @@ app.get('/cep/:cep', async (req, res) => {
 // Rota de health check para Railway
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// Rota para verificar status da sessão (debug)
+app.get('/session-status', (req, res) => {
+  res.json({ 
+    session: req.session,
+    logado: req.session && req.session.logado,
+    tipo: req.session && req.session.tipo,
+    usuario: req.session && req.session.usuario
+  });
 });
 
 const PORT = process.env.PORT || 3001;

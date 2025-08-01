@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { API_CONFIG } from './config';
 
 function Configuracoes({ usuarioLogado }) {
   const [usuarios, setUsuarios] = useState([]);
@@ -8,7 +9,7 @@ function Configuracoes({ usuarioLogado }) {
 
   const fetchUsuarios = () => {
     setCarregando(true);
-    fetch('http://localhost:3001/usuarios', { credentials: 'include' })
+    fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.usuarios}`, { credentials: 'include' })
       .then(res => res.json())
       .then(data => { setUsuarios(data); setCarregando(false); })
       .catch(() => setCarregando(false));
@@ -20,7 +21,7 @@ function Configuracoes({ usuarioLogado }) {
     e.preventDefault();
     setMensagem('');
     try {
-      const res = await fetch('http://localhost:3001/usuarios', {
+      const res = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.usuarios}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -43,7 +44,7 @@ function Configuracoes({ usuarioLogado }) {
     if (!novaSenha) return;
     setMensagem('');
     try {
-      const res = await fetch(`http://localhost:3001/usuarios/${id}/resetar-senha`, {
+      const res = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.usuarios}/${id}/resetar-senha`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -59,7 +60,7 @@ function Configuracoes({ usuarioLogado }) {
   const alterarPermissao = async (id, tipo) => {
     setMensagem('');
     try {
-      const res = await fetch(`http://localhost:3001/usuarios/${id}/permissao`, {
+      const res = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.usuarios}/${id}/permissao`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

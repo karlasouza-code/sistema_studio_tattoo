@@ -35,6 +35,21 @@ function App() {
     }
   };
 
+  // Função de logout
+  const handleLogout = async () => {
+    try {
+      await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.logout}`, {
+        method: 'POST',
+        credentials: 'include'
+      });
+    } catch (error) {
+      console.log('Erro no logout:', error);
+    }
+    setLogado(false);
+    setTipoUsuario('');
+    setPrecisaTrocarSenha(false);
+  };
+
   if (!logado) {
     return <Login onLogin={handleLogin} />;
   }
@@ -45,7 +60,7 @@ function App() {
 
   return (
     <div className="App">
-      <Menu onNavigate={setTela} tipoUsuario={tipoUsuario} />
+      <Menu onNavigate={setTela} tipoUsuario={tipoUsuario} onLogout={handleLogout} />
       {tela === 'home' && <ResumoDia />}
       {tela === 'cadastro' && <CadastroCliente />}
       {tela === 'agendamento' && <Agendamento />}

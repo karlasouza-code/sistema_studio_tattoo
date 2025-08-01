@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Menu.css';
 
-function Menu({ onNavigate, tipoUsuario }) {
+function Menu({ onNavigate, tipoUsuario, onLogout }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -21,6 +21,7 @@ function Menu({ onNavigate, tipoUsuario }) {
           {tipoUsuario === 'admin' && (
             <li onClick={() => { onNavigate('config'); setOpen(false); }}>Configurações</li>
           )}
+          <li onClick={() => { onLogout(); setOpen(false); }}>Sair</li>
         </ul>
       )}
     </nav>
