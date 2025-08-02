@@ -6,16 +6,7 @@ const bcrypt = require('bcryptjs');
 
 const app = express();
 app.use(cors({
-  origin: [
-    'http://localhost:3002', 
-    'http://localhost:3000', 
-    'http://localhost:3001', 
-    'https://*.vercel.app', 
-    'https://*.railway.app', 
-    'https://karlasouza-code.github.io',
-    'https://*.github.io',
-    'https://*.github.com'
-  ],
+  origin: true, // Permite todas as origens temporariamente
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
