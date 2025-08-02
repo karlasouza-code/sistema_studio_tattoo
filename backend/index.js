@@ -21,6 +21,51 @@ const pool = new Pool({
   port: process.env.DB_PORT || 5432,
 });
 
+// Criar tabelas automaticamente
+async function createTables() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS usuarios (
+        id SERIAL PRIMARY KEY,
+        nome VARCHAR(100) NOT NULL,
+        usuario VARCHAR(50) UNIQUE NOT NULL,
+        senha VARCHAR(255) NOT NULL,
+        tipo VARCHAR(20) DEFAULT 'atendente',
+        precisaTrocarSenha BOOLEAN DEFAULT false,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      CREATE TABLE IF NOT EXISTS clientes (
+        id SERIAL PRIMARY KEY,
+        nome VARCHAR(100) NOT NULL,
+        telefone VARCHAR(20),
+        email VARCHAR(100),
+        cpf VARCHAR(14) UNIQUE,
+        data_nascimento DATE,
+        cep VARCHAR(10),
+        endereco TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      CREATE TABLE IF NOT EXISTS agendamentos (
+        id SERIAL PRIMARY KEY,
+        cliente_id INTEGER REFERENCES clientes(id),
+        data DATE NOT NULL,
+        hora TIME NOT NULL,
+        descricao TEXT,
+        valor DECIMAL(10,2),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    console.log('Tabelas criadas com sucesso!');
+  } catch (err) {
+    console.log('Erro ao criar tabelas:', err.message);
+  }
+}
+
+// Executar criação das tabelas
+createTables();
+
 // Usuário e senha fixos para autenticação simples
 const USUARIO = process.env.USUARIO || 'admin';
 const SENHA = process.env.SENHA || '1234';
