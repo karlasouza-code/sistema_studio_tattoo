@@ -216,16 +216,29 @@ app.get('/usuarios', autenticar, apenasAdmin, async (req, res) => {
 // Rota para criar usuário (apenas admin)
 app.post('/usuarios', autenticar, apenasAdmin, async (req, res) => {
   const { nome, usuario, senha, tipo } = req.body;
+  console.log('Tentando criar usuário:', { nome, usuario, tipo });
+  
   try {
+    // Verificar se a tabela existe
+    const tableCheck = await pool.query("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'usuarios')");
+    console.log('Tabela usuarios existe:', tableCheck.rows[0].exists);
+    
+    if (!tableCheck.rows[0].exists) {
+      console.log('Tabela usuarios não existe, criando...');
+      await createTables();
+    }
+    
     const hash = await bcrypt.hash(senha, 10);
     const precisaTrocarSenha = senha === '1234';
     const result = await pool.query(
       'INSERT INTO usuarios (nome, usuario, senha, tipo, precisaTrocarSenha) VALUES ($1, $2, $3, $4, $5) RETURNING id, nome, usuario, tipo, precisaTrocarSenha',
       [nome, usuario, hash, tipo || 'atendente', precisaTrocarSenha]
     );
+    console.log('Usuário criado com sucesso:', result.rows[0]);
     res.status(201).json(result.rows[0]);
   } catch (err) {
     console.log('Erro ao criar usuário:', err.message);
+    console.log('Detalhes do erro:', err);
     res.status(500).json({ erro: 'Erro ao criar usuário. Verifique se o banco de dados está configurado.' });
   }
 });
