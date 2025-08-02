@@ -26,6 +26,9 @@ const pool = new Pool({
   database: process.env.DB_NAME || 'tattoo_studio',
   password: process.env.DB_PASS || 'tattoo123',
   port: process.env.DB_PORT || 5432,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 // Criar tabelas automaticamente
