@@ -26,9 +26,10 @@ const pool = new Pool({
   database: process.env.DB_NAME || 'tattoo_studio',
   password: process.env.DB_PASS || 'tattoo123',
   port: process.env.DB_PORT || 5432,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  ssl: process.env.NODE_ENV === 'production' ? {
+    rejectUnauthorized: false,
+    sslmode: 'require'
+  } : false
 });
 
 // Criar tabelas automaticamente
@@ -313,6 +314,23 @@ app.get('/cep/:cep', async (req, res) => {
 // Rota de health check para Railway
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// Rota para verificar status do banco de dados
+app.get('/db-status', async (req, res) => {
+  try {
+    const result = await pool.query("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'usuarios')");
+    res.json({ 
+      tabela_usuarios_existe: result.rows[0].exists,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    res.json({ 
+      erro: err.message,
+      tabela_usuarios_existe: false,
+      timestamp: new Date().toISOString()
+    });
+  }
 });
 
 // Rota para verificar status da sessão (debug)
