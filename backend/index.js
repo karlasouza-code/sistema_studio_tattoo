@@ -104,6 +104,12 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'tattoo_secret',
   resave: false,
   saveUninitialized: true,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'none',
+    httpOnly: false,
+    maxAge: 24 * 60 * 60 * 1000 // 24 horas
+  }
 }));
 
 // Rota de login (atualizada para usuários do banco)
