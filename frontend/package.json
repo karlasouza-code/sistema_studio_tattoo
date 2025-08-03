@@ -1,7 +1,7 @@
 {
   "name": "frontend",
   "version": "0.1.0",
-  "homepage": "https://karlasouza-code.github.io/sistema_studio_tattoo",
+  "homepage": ".",
   "private": true,
   "dependencies": {
     "cra-template-pwa": "2.0.0",
