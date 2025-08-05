@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_CONFIG, apiRequest } from './config';
 
 function Agendamento() {
   const [clientes, setClientes] = useState([]);
@@ -10,7 +11,7 @@ function Agendamento() {
   const [mensagem, setMensagem] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:3001/clientes')
+    apiRequest(`${API_CONFIG.baseURL}/clientes`)
       .then(res => res.json())
       .then(data => setClientes(data))
       .catch(() => setClientes([]));
@@ -20,9 +21,8 @@ function Agendamento() {
     e.preventDefault();
     setMensagem('');
     try {
-      const response = await fetch('http://localhost:3001/agendamentos', {
+      const response = await apiRequest(`${API_CONFIG.baseURL}/agendamentos`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           cliente_id: clienteId,
           data,

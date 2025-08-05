@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API_CONFIG, apiRequest } from './config';
 
 function CadastroCliente() {
   const [nome, setNome] = useState('');
@@ -45,7 +46,7 @@ function CadastroCliente() {
     const cepLimpo = cep.replace(/\D/g, '');
     if (cepLimpo.length === 8) {
       try {
-        const response = await fetch(`http://localhost:3001/cep/${cepLimpo}`);
+        const response = await apiRequest(`${API_CONFIG.baseURL}/cep/${cepLimpo}`);
         if (response.ok) {
           const data = await response.json();
           const enderecoCompleto = `${data.logradouro}, ${data.bairro}, ${data.localidade} - ${data.uf}`;
@@ -89,9 +90,8 @@ function CadastroCliente() {
     }
     
     try {
-      const response = await fetch('http://localhost:3001/clientes', {
+      const response = await apiRequest(`${API_CONFIG.baseURL}/clientes`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           nome, 
           telefone, 
