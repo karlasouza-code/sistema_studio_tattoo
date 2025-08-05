@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { apiRequest } from './config';
+import { API_CONFIG, apiRequest } from './config';
 
 function TrocarSenha({ onTrocaSenha }) {
   const [novaSenha, setNovaSenha] = useState('');
