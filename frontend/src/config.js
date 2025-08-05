@@ -1,5 +1,5 @@
 // Configuração da API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://tattoo-backend-jhar.onrender.com';
+const API_BASE_URL = 'https://tattoo-backend-jhar.onrender.com';
 
 export const API_CONFIG = {
   baseURL: API_BASE_URL,
