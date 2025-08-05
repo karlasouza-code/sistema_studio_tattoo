@@ -1,1 +1,3 @@
-Force deploy - $(date) 
+# Forçar novo deploy
+# Timestamp: 2025-08-05T22:20:00Z
+# Motivo: Atualizar URLs para Render 
