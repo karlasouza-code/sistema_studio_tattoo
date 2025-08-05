@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { API_CONFIG, apiRequest } from './config';
 
 function ResumoDia() {
   const [agendamentos, setAgendamentos] = useState([]);
@@ -8,7 +9,7 @@ function ResumoDia() {
   useEffect(() => {
     const dataHoje = new Date().toISOString().slice(0, 10);
     setHoje(dataHoje);
-    fetch('http://localhost:3001/agendamentos')
+    apiRequest(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.agendamentos}`)
       .then(res => res.json())
       .then(data => {
         // Filtra apenas agendamentos do dia

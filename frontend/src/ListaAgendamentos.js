@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { API_CONFIG, apiRequest } from './config';
 
 function ListaAgendamentos() {
   const [agendamentos, setAgendamentos] = useState([]);
   const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3001/agendamentos')
+    apiRequest(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.agendamentos}`)
       .then(res => res.json())
       .then(data => {
         setAgendamentos(data);

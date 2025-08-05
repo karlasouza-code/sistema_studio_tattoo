@@ -16,8 +16,40 @@ app.use(cors({
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: [
+    'Content-Type', 
+    'Authorization', 
+    'Referer', 
+    'User-Agent',
+    'sec-ch-ua',
+    'sec-ch-ua-mobile',
+    'sec-ch-ua-platform'
+  ]
 }));
+
+// Middleware para configurar headers padrão
+app.use((req, res, next) => {
+  // Headers de segurança
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  
+  // Permitir que o frontend acesse os headers personalizados
+  res.setHeader('Access-Control-Expose-Headers', 'Content-Type, Authorization');
+  
+  next();
+});
+
+// Middleware para garantir content-type application/json em respostas JSON
+app.use((req, res, next) => {
+  const originalJson = res.json;
+  res.json = function(data) {
+    res.setHeader('Content-Type', 'application/json');
+    return originalJson.call(this, data);
+  };
+  next();
+});
+
 app.use(express.json());
 
 const pool = new Pool({
@@ -76,6 +108,31 @@ async function createTables() {
 
 // Executar criação das tabelas
 createTables();
+
+// Rota simples para testar se o servidor está funcionando
+app.get('/test', (req, res) => {
+  res.json({ message: 'Servidor funcionando!', timestamp: new Date().toISOString() });
+});
+
+// Rota para testar headers
+app.get('/test-headers', (req, res) => {
+  console.log('Rota /test-headers foi chamada');
+  console.log('Headers recebidos:', req.headers);
+  
+  res.json({
+    message: 'Headers testados com sucesso',
+    headers: {
+      'content-type': req.get('content-type'),
+      'referer': req.get('referer'),
+      'user-agent': req.get('user-agent'),
+      'sec-ch-ua': req.get('sec-ch-ua'),
+      'sec-ch-ua-mobile': req.get('sec-ch-ua-mobile'),
+      'sec-ch-ua-platform': req.get('sec-ch-ua-platform')
+    },
+    allHeaders: req.headers,
+    timestamp: new Date().toISOString()
+  });
+});
 
 // Usuário e senha fixos para autenticação simples
 const USUARIO = process.env.USUARIO || 'admin';

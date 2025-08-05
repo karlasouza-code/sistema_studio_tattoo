@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { apiRequest } from './config';
 
 function TrocarSenha({ onTrocaSenha }) {
   const [novaSenha, setNovaSenha] = useState('');
@@ -17,10 +18,8 @@ function TrocarSenha({ onTrocaSenha }) {
       return;
     }
     try {
-      const res = await fetch('http://localhost:3001/alterar-senha', {
+      const res = await apiRequest(`${API_CONFIG.baseURL}/alterar-senha`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ novaSenha })
       });
       if (res.ok) {

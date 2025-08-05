@@ -8,7 +8,7 @@ import Login from './Login';
 import Configuracoes from './Configuracoes';
 import TrocarSenha from './TrocarSenha';
 import RedesSociais from './RedesSociais';
-import { API_CONFIG } from './config';
+import { API_CONFIG, apiRequest } from './config';
 import './App.css';
 
 function App() {
@@ -19,10 +19,8 @@ function App() {
 
   // Após login, usar tipo retornado pelo backend
   const handleLogin = async (usuario, senha) => {
-    const res = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.login}`, {
+    const res = await apiRequest(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.login}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
       body: JSON.stringify({ usuario, senha })
     });
     if (res.ok) {
@@ -38,9 +36,8 @@ function App() {
   // Função de logout
   const handleLogout = async () => {
     try {
-      await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.logout}`, {
-        method: 'POST',
-        credentials: 'include'
+      await apiRequest(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.logout}`, {
+        method: 'POST'
       });
     } catch (error) {
       console.log('Erro no logout:', error);
