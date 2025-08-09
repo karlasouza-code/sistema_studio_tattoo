@@ -16,6 +16,7 @@ function App() {
   const [logado, setLogado] = useState(false);
   const [tipoUsuario, setTipoUsuario] = useState('');
   const [precisaTrocarSenha, setPrecisaTrocarSenha] = useState(false);
+  const [clienteRecemCadastradoId, setClienteRecemCadastradoId] = useState(null);
 
   // Após login, usar tipo retornado pelo backend
   const handleLogin = async (usuario, senha) => {
@@ -59,8 +60,19 @@ function App() {
     <div className="App">
       <Menu onNavigate={setTela} tipoUsuario={tipoUsuario} onLogout={handleLogout} />
       {tela === 'home' && <ResumoDia />}
-      {tela === 'cadastro' && <CadastroCliente />}
-      {tela === 'agendamento' && <Agendamento />}
+      {tela === 'cadastro' && (
+        <CadastroCliente
+          onClienteCadastrado={(novoClienteId) => {
+            setClienteRecemCadastradoId(novoClienteId);
+            setTela('agendamento');
+          }}
+        />
+      )}
+      {tela === 'agendamento' && (
+        <Agendamento
+          clienteIdInicial={clienteRecemCadastradoId}
+        />
+      )}
       {tela === 'lista' && <ListaAgendamentos />}
       {tela === 'redes' && <RedesSociais usuarioLogado={{ tipo: tipoUsuario }} />}
       {tela === 'config' && tipoUsuario === 'admin' && <Configuracoes usuarioLogado={tipoUsuario} />}

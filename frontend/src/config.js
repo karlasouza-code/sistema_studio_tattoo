@@ -8,6 +8,7 @@ export const API_CONFIG = {
     logout: '/logout',
     clientes: '/clientes',
     agendamentos: '/agendamentos',
+    agendamentosClientes: '/agendamentos/clientes',
     usuarios: '/usuarios',
     cep: '/cep',
     alterarSenha: '/alterar-senha',

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { API_CONFIG, apiRequest } from './config';
 
-function CadastroCliente() {
+function CadastroCliente({ onClienteCadastrado }) {
   const [nome, setNome] = useState('');
   const [telefone, setTelefone] = useState('');
   const [email, setEmail] = useState('');
@@ -104,6 +104,7 @@ function CadastroCliente() {
       });
       
       if (response.ok) {
+        const novoCliente = await response.json();
         setMensagem('Cliente cadastrado com sucesso!');
         setNome(''); 
         setTelefone(''); 
@@ -112,6 +113,9 @@ function CadastroCliente() {
         setDataNascimento('');
         setCep('');
         setEndereco('');
+        if (onClienteCadastrado && novoCliente && novoCliente.id) {
+          onClienteCadastrado(novoCliente.id);
+        }
       } else {
         const errorData = await response.json();
         setMensagem(errorData.error || 'Erro ao cadastrar cliente.');

@@ -17,9 +17,9 @@ app.use(cors({
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: [
-    'Content-Type', 
-    'Authorization', 
-    'Referer', 
+    'Content-Type',
+    'Authorization',
+    'Referer',
     'User-Agent',
     'sec-ch-ua',
     'sec-ch-ua-mobile',
@@ -206,6 +206,17 @@ app.post('/logout', (req, res) => {
   res.json({ sucesso: true });
 });
 
+// Rota para listar clientes
+app.get('/clientes', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT id, nome, telefone, email FROM clientes ORDER BY nome');
+    res.json(result.rows);
+  } catch (err) {
+    console.log('Erro ao listar clientes:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Rota para cadastrar cliente
 app.post('/clientes', async (req, res) => {
   const { nome, telefone, email, cpf, data_nascimento, cep, endereco } = req.body;
@@ -262,6 +273,30 @@ app.get('/agendamentos', async (req, res) => {
     const result = await pool.query(
       'SELECT a.*, c.nome, c.telefone FROM agendamentos a JOIN clientes c ON a.cliente_id = c.id ORDER BY data, hora'
     );
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Rota para listar clientes que possuem ao menos um agendamento
+app.get('/agendamentos/clientes', async (req, res) => {
+  try {
+    const { q } = req.query;
+    const hasQuery = q && q.trim().length > 0;
+
+    const sqlBase = `
+      SELECT DISTINCT c.id, c.nome, c.telefone, c.email
+      FROM clientes c
+      INNER JOIN agendamentos a ON a.cliente_id = c.id
+    `;
+
+    const sql = hasQuery
+      ? `${sqlBase} WHERE c.nome ILIKE $1 ORDER BY c.nome`
+      : `${sqlBase} ORDER BY c.nome`;
+
+    const params = hasQuery ? [`%${q}%`] : [];
+    const result = await pool.query(sql, params);
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });

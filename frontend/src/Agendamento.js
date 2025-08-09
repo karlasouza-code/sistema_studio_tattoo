@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { API_CONFIG, apiRequest } from './config';
 
-function Agendamento() {
+function Agendamento({ clienteIdInicial }) {
   const [clientes, setClientes] = useState([]);
   const [clienteId, setClienteId] = useState('');
   const [data, setData] = useState('');
@@ -13,9 +13,24 @@ function Agendamento() {
   useEffect(() => {
     apiRequest(`${API_CONFIG.baseURL}/clientes`)
       .then(res => res.json())
-      .then(data => setClientes(data))
+      .then(data => {
+        setClientes(data);
+        if (clienteIdInicial) {
+          const idStr = String(clienteIdInicial);
+          const exists = data.some(c => String(c.id) === idStr);
+          if (exists) setClienteId(idStr);
+        }
+      })
       .catch(() => setClientes([]));
-  }, []);
+  }, [clienteIdInicial]);
+
+  useEffect(() => {
+    if (clienteIdInicial && clientes.length > 0) {
+      const idStr = String(clienteIdInicial);
+      const exists = clientes.some(c => String(c.id) === idStr);
+      if (exists) setClienteId(idStr);
+    }
+  }, [clienteIdInicial, clientes]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
