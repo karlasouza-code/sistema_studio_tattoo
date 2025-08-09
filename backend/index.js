@@ -161,13 +161,15 @@ const session = require('express-session');
 // Necessário para que cookies "secure" funcionem atrás de proxy (ex.: Render)
 app.set('trust proxy', 1);
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 app.use(session({
   secret: process.env.SESSION_SECRET || 'tattoo_secret',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'none',
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000 // 24 horas
   }
