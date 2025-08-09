@@ -157,14 +157,18 @@ function apenasAdmin(req, res, next) {
 }
 
 const session = require('express-session');
+
+// Necessário para que cookies "secure" funcionem atrás de proxy (ex.: Render)
+app.set('trust proxy', 1);
+
 app.use(session({
   secret: process.env.SESSION_SECRET || 'tattoo_secret',
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   cookie: {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'none',
-    httpOnly: false,
+    httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000 // 24 horas
   }
 }));
