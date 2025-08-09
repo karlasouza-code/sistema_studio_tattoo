@@ -5,15 +5,25 @@ const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 
 const app = express();
+
+// CORS com validação por regex para subdomínios do Vercel e Render
+const allowedOrigins = new Set([
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:3002',
+  'https://frontend-two-flame.vercel.app'
+]);
+const vercelRegex = /^https?:\/\/([a-z0-9-]+\.)*vercel\.app$/i;
+const renderRegex = /^https?:\/\/([a-z0-9-]+\.)*onrender\.com$/i;
+
 app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'http://localhost:3001',
-    'http://localhost:3002',
-    'https://frontend-two-flame.vercel.app',
-    'https://*.vercel.app',
-    'https://*.onrender.com'
-  ],
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.has(origin) || vercelRegex.test(origin) || renderRegex.test(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: [

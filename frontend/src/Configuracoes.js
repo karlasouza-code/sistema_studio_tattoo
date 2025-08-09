@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { API_CONFIG } from './config';
+import { API_CONFIG, apiRequest } from './config';
 
 function Configuracoes({ usuarioLogado }) {
   const [usuarios, setUsuarios] = useState([]);
@@ -9,7 +9,7 @@ function Configuracoes({ usuarioLogado }) {
 
   const fetchUsuarios = () => {
     setCarregando(true);
-    fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.usuarios}`, { credentials: 'include' })
+    apiRequest(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.usuarios}`)
       .then(res => res.json())
       .then(data => { setUsuarios(data); setCarregando(false); })
       .catch(() => setCarregando(false));
@@ -21,10 +21,8 @@ function Configuracoes({ usuarioLogado }) {
     e.preventDefault();
     setMensagem('');
     try {
-      const res = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.usuarios}`, {
+      const res = await apiRequest(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.usuarios}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify(novo)
       });
       if (res.ok) {
@@ -44,10 +42,8 @@ function Configuracoes({ usuarioLogado }) {
     if (!novaSenha) return;
     setMensagem('');
     try {
-      const res = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.usuarios}/${id}/resetar-senha`, {
+      const res = await apiRequest(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.usuarios}/${id}/resetar-senha`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ novaSenha })
       });
       if (res.ok) setMensagem('Senha resetada!');
@@ -60,10 +56,8 @@ function Configuracoes({ usuarioLogado }) {
   const alterarPermissao = async (id, tipo) => {
     setMensagem('');
     try {
-      const res = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.usuarios}/${id}/permissao`, {
+      const res = await apiRequest(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.usuarios}/${id}/permissao`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ tipo })
       });
       if (res.ok) {
