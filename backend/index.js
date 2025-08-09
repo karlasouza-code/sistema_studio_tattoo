@@ -100,6 +100,11 @@ async function createTables() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
+    // Garantir colunas que podem não existir em instâncias antigas
+    await pool.query("ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS precisaTrocarSenha BOOLEAN DEFAULT false");
+    await pool.query("ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
+    await pool.query("ALTER TABLE clientes ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
+    await pool.query("ALTER TABLE agendamentos ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
     console.log('Tabelas criadas com sucesso!');
   } catch (err) {
     console.log('Erro ao criar tabelas:', err.message);
@@ -336,6 +341,9 @@ app.post('/usuarios', autenticar, apenasAdmin, async (req, res) => {
       await createTables();
     }
     
+    // Garantir schema atualizado
+    await createTables();
+
     const hash = await bcrypt.hash(senha, 10);
     const precisaTrocarSenha = senha === '1234';
     const result = await pool.query(
@@ -345,9 +353,11 @@ app.post('/usuarios', autenticar, apenasAdmin, async (req, res) => {
     console.log('Usuário criado com sucesso:', result.rows[0]);
     res.status(201).json(result.rows[0]);
   } catch (err) {
-    console.log('Erro ao criar usuário:', err.message);
-    console.log('Detalhes do erro:', err);
-    res.status(500).json({ erro: 'Erro ao criar usuário. Verifique se o banco de dados está configurado.' });
+    console.log('Erro ao criar usuário:', err.code, err.message);
+    if (err.code === '23505') {
+      return res.status(400).json({ erro: 'Usuário já existe' });
+    }
+    res.status(500).json({ erro: 'Erro ao criar usuário.' });
   }
 });
 
