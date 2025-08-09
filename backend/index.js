@@ -353,11 +353,12 @@ app.post('/usuarios', autenticar, apenasAdmin, async (req, res) => {
     console.log('Usuário criado com sucesso:', result.rows[0]);
     res.status(201).json(result.rows[0]);
   } catch (err) {
-    console.log('Erro ao criar usuário:', err.code, err.message);
+    console.log('Erro ao criar usuário:', err.code, err.message, err.detail, err.constraint);
     if (err.code === '23505') {
       return res.status(400).json({ erro: 'Usuário já existe' });
     }
-    res.status(500).json({ erro: 'Erro ao criar usuário.' });
+    // Temporário: expor informações para depuração
+    res.status(500).json({ erro: 'Erro ao criar usuário.', code: err.code, detail: err.detail, constraint: err.constraint });
   }
 });
 
